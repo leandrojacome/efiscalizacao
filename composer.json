@@ -21,7 +21,8 @@
         "lucascudo/laravel-pt-br-localization": "*",
         "prettus/l5-repository": "*",
         "rap2hpoutre/laravel-log-viewer": "^1.4",
-        "spatie/laravel-permission": "^3.11"
+        "spatie/laravel-permission": "^3.11",
+        "zanysoft/laravel-zip": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

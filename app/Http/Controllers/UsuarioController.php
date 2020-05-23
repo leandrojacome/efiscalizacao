@@ -44,6 +44,11 @@ class UsuarioController extends Controller
         }
     }
 
+    public function logout()
+    {
+        return redirect('login')->with(Auth::logout());
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -32,6 +32,8 @@ Route::get('/usuario/{id}/password', 'UsuarioController@editPassword')->name('us
 Route::get('/usuario/{id}/reset', 'UsuarioController@resetPassword')->name('usuario.reset.password')->middleware('auth');
 Route::patch('/usuario/update/{id}/password', 'UsuarioController@updatePassword')->name('usuario.update.password');//->middleware('auth');
 Route::get('/diligencia/pdf/{id}', 'DiligenciaController@pdf')->name('pdf')->middleware('auth');
+Route::get('/diligencia/pdf/{id}/download', 'DiligenciaController@pdfDownload')->name('pdfDownload')->middleware('auth');
+Route::get('/diligencia/pdf/download/all', 'DiligenciaController@pdfDownloadAll')->name('pdfDownloadAll')->middleware('auth');
 Route::get('/diligencia/historico/{diligencia_id}', 'DiligenciaController@historico')->name('diligencia.historico')->middleware('auth');
 Route::post('/diligencia/historico/store/{diligencia_id}', 'DiligenciaController@historicoStore')->name('diligencia.historico.store')->middleware('auth');
 Route::get('/getRota/{id?}', 'CidadeController@getRota')->middleware('auth');
@@ -62,7 +64,13 @@ Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->
 Route::get('/401', function (){
     return view('errors.401');
 })->name('401');
+Route::get('/404', function (){
+    return view('errors.404');
+})->name('404');
 
 Auth::routes();
+Route::get('/logout', 'UsuarioController@logout')->name('logout');
+
+//Route::get('/{hash?}', 'HashController@index')->name('hash');
 
 Route::get('/', 'HomeController@index')->name('home');

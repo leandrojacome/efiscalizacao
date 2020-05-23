@@ -54,7 +54,7 @@
                 <button type="button" onclick="form1.submit();" class="btn btn-primary btn-sm">
                     <i class="fa fa-save"></i> Salvar
                 </button>
-                <a href="{{route('usuario.index')}}" type="reset" class="btn btn-success btn-sm">
+                <a href="{{url()->previous()}}" class="btn btn-success btn-sm">
                     <i class="fa fa-ban"></i> Cancelar
                 </a>
             </div>

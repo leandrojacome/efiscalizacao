@@ -192,7 +192,7 @@
                     <i class="fa fa-print"></i> Imprimir
                 </a>
                 @hasanyrole('super-admin|gerencia|administrativo')
-                <a href="{{route('diligencia.edit', $diligencia->id)}}" type="reset" class="btn btn-primary btn-sm">
+                <a href="{{route('diligencia.edit', $diligencia->id)}}" class="btn btn-primary btn-sm">
                     <i class="fa fa-edit"></i> Editar
                 </a>
                 <button type="button" onclick="if(confirm('Tem certeza?')) form1.submit();"
@@ -200,9 +200,14 @@
                     <i class="fa fa-times"></i> Remover
                 </button>
                 @endhasanyrole
-                <a href="{{route('diligencia.historico', $diligencia->id)}}" type="reset" class="btn btn-info btn-sm">
+                <a href="{{route('diligencia.historico', $diligencia->id)}}" class="btn btn-info btn-sm">
                     <i class="fa fa-tags"></i> Histórico
                 </a>
+                @hasanyrole('super-admin|gerencia|administrativo')
+                <a href="{{route('diligencia.create')}}" class="btn btn-outline-primary btn-sm">
+                    <i class="fa fa-plus"></i> Novo
+                </a>
+                @endhasanyrole
             </div>
         </div>
     </div>

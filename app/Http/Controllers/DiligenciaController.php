@@ -268,11 +268,79 @@ class DiligenciaController extends Controller
             ->with('status', 'danger');
     }
 
-    public
-    function pdf($id)
+    public function pdf($id)
     {
         $diligencia = $this->diligencia->find($id);
-        return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream();
+        if(is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
+        else if(!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
+        else if(is_null($diligencia->cidade->rota_id))
+        {
+            $rota = $this->rota->find($diligencia->rota_id);
+            if(!is_null($diligencia->nome_denunciante))
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
+            elseif (is_null($diligencia->telefone_denunciante))
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+            else
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
+        }
+        else
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+    }
+
+    public function pdfDownload($id)
+    {
+        $diligencia = $this->diligencia->find($id);
+        if(is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
+        else if(!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
+        else if(is_null($diligencia->cidade->rota_id))
+        {
+            $rota = $this->rota->find($diligencia->rota_id);
+            if(!is_null($diligencia->nome_denunciante))
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
+            elseif (is_null($diligencia->telefone_denunciante))
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+            else
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
+        }
+        else
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+    }
+
+    public function pdfDownloadAll()
+    {
+        $diligencias = $this->diligencia->all();
+        foreach ($diligencias as $diligencia) {
+            if (is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id)) {
+                $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf", $output);
+            }
+            else if (!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id)) {
+                $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
+            }
+            else if (is_null($diligencia->cidade->rota_id)) {
+                $rota = $this->rota->find($diligencia->rota_id);
+                if (!is_null($diligencia->nome_denunciante)) {
+                    $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
+                }
+                elseif (is_null($diligencia->telefone_denunciante)) {
+                    $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
+                }
+                else {
+                    $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf", $output);
+                }
+            } else {
+                $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
+                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
+            }
+        }
     }
 
     public function historico($diligencia_id)

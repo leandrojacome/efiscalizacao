@@ -42,6 +42,10 @@ class ComposerStaticInit7e19a465124b147a1cb5adab1bba9c7a
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
+        'Z' => 
+        array (
+            'ZanySoft\\Zip\\' => 13,
+        ),
         'X' => 
         array (
             'XdgBaseDir\\' => 11,
@@ -193,6 +197,10 @@ class ComposerStaticInit7e19a465124b147a1cb5adab1bba9c7a
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'ZanySoft\\Zip\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zanysoft/laravel-zip/src',
         ),
         'XdgBaseDir\\' => 
         array (
@@ -557,6 +565,7 @@ class ComposerStaticInit7e19a465124b147a1cb5adab1bba9c7a
         'App\\Http\\Controllers\\DiligenciaController' => __DIR__ . '/../..' . '/app/Http/Controllers/DiligenciaController.php',
         'App\\Http\\Controllers\\FiscalController' => __DIR__ . '/../..' . '/app/Http/Controllers/FiscalController.php',
         'App\\Http\\Controllers\\FotoController' => __DIR__ . '/../..' . '/app/Http/Controllers/FotoController.php',
+        'App\\Http\\Controllers\\HashController' => __DIR__ . '/../..' . '/app/Http/Controllers/HashController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\LocalizacaoController' => __DIR__ . '/../..' . '/app/Http/Controllers/LocalizacaoController.php',
         'App\\Http\\Controllers\\OcorrenciaController' => __DIR__ . '/../..' . '/app/Http/Controllers/OcorrenciaController.php',
@@ -5201,6 +5210,10 @@ class ComposerStaticInit7e19a465124b147a1cb5adab1bba9c7a
         'Whoops\\Util\\SystemFacade' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
         'Whoops\\Util\\TemplateHelper' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
         'XdgBaseDir\\Xdg' => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src/Xdg.php',
+        'ZanySoft\\Zip\\Zip' => __DIR__ . '/..' . '/zanysoft/laravel-zip/src/Zip.php',
+        'ZanySoft\\Zip\\ZipFacade' => __DIR__ . '/..' . '/zanysoft/laravel-zip/src/ZipFacade.php',
+        'ZanySoft\\Zip\\ZipManager' => __DIR__ . '/..' . '/zanysoft/laravel-zip/src/ZipManager.php',
+        'ZanySoft\\Zip\\ZipServiceProvider' => __DIR__ . '/..' . '/zanysoft/laravel-zip/src/ZipServiceProvider.php',
         'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
         'phpDocumentor\\Reflection\\DocBlockFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
         'phpDocumentor\\Reflection\\DocBlockFactoryInterface' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactoryInterface.php',

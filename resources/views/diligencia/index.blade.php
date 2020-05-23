@@ -71,6 +71,10 @@
                                        class="btn btn-secondary btn-sm">
                                         <i class="fa fa-print"></i> Imprimir
                                     </a>
+                                    <a href="{{url("/diligencia/pdf/{$diligencia->id}/download")}}" target="_blank"
+                                       class="btn btn-danger btn-sm">
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
                                     @hasanyrole('super-admin|gerencia|administrativo')
                                     <a href="{{ route('diligencia.edit', $diligencia->id) }}"
                                        class="btn btn-primary btn-sm">

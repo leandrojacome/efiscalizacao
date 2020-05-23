@@ -11,7 +11,6 @@
 
     <!-- Title Page-->
     <title>Login</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{url('images')}}/favicon.ico">
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -40,11 +39,6 @@
         <div class="container">
             <div class="login-wrap">
                 <div class="login-content">
-                    <div class="login-logo">
-                        <a href="#">
-                            <img src="images/logo.png" alt="CRECI-GO">
-                        </a>
-                    </div>
                     <div class="login-form">
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
