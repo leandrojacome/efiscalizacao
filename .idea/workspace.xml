@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1c9db503-7287-426e-b192-51950f743653" name="Default Changelist" comment="Alterações de usuabilidade e aparência.">
-      <change beforePath="$PROJECT_DIR$/.idea/crecifisc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/crecifisc.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="1c9db503-7287-426e-b192-51950f743653" name="Default Changelist" comment="add jquery.selectlistactions.js">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DiligenciaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DiligenciaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/vendor/jquery.selectlistactions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/vendor/jquery.selectlistactions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/diligencia/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/diligencia/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/diligencia/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/diligencia/show.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/template.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/template.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/usuario/changepassword.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/usuario/changepassword.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/bootstrap-4.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/bootstrap-4.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_static.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_static.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,8 +255,16 @@
       <workItem from="1589880461057" duration="2170000" />
       <workItem from="1589941036829" duration="1099000" />
       <workItem from="1590047994302" duration="4890000" />
-      <workItem from="1590266916155" duration="389000" />
+      <workItem from="1590266916155" duration="972000" />
     </task>
+    <task id="LOCAL-00001" summary="Correções e alterações de bugs">
+      <created>1590267632827</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1590267632828</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -284,7 +272,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Alterações de usuabilidade e aparência." />
-    <option name="LAST_COMMIT_MESSAGE" value="Alterações de usuabilidade e aparência." />
+    <MESSAGE value="Correções e alterações de bugs" />
+    <MESSAGE value="add jquery.selectlistactions.js" />
+    <option name="LAST_COMMIT_MESSAGE" value="add jquery.selectlistactions.js" />
   </component>
   <component name="WindowStateProjectService">
     <state x="348" y="67" key="#CLI_Interpreters" timestamp="1586470617251">
@@ -332,10 +322,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="338" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#/0.0.1536.824@0.0.1536.824" timestamp="1585789252612" />
-    <state x="393" y="7" key="CommitChangelistDialog2" timestamp="1589880657264">
+    <state x="393" y="7" key="CommitChangelistDialog2" timestamp="1590267916384">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="393" y="7" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1589880657264" />
+    <state x="393" y="7" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1590267916384" />
     <state x="503" y="174" key="EnvironmentVariablesDialog" timestamp="1586466024413">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -417,6 +407,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="0" y="0" width="740" height="824" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1586849015598" />
+    <state x="477" y="204" key="git4idea.merge.GitPullDialog" timestamp="1590267846069">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="477" y="204" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1590267846069" />
     <state x="425" y="187" key="run.anything.popup" timestamp="1586471753763">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
