@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="row form-group">
-        <div class="col-6">
+        <div class="col-4">
             <label for="cidade_id" class="form-control-label">Cidade</label>
             <select name="cidade_id" id="cidade_id" class="form-control">
                 <option value="">Selecione uma cidade</option>
@@ -37,7 +37,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-6">
+        <div class="col-4">
             <label for="rota_id" class="form-control-label">Rota</label>
             <select name="rota_id" id="rota_id" class="form-control">
                 <option value="">Selecione uma rota</option>
@@ -58,42 +58,11 @@
                 @endforeach
             </select>
         </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-4">
-            <label for="localizacao_id" class="form-control-label">Localização</label>
-            <select name="localizacao_id" id="localizacao_id" class="form-control">
-                <option value="">Selecione uma localização</option>
-                @foreach($localizacoes as $localizacao)
-                    @if(isset($diligencia))
-                        @if($diligencia->localizacao_id == $localizacao->id)
-                            <option value="{{$localizacao->id}}" selected>{{$localizacao->nome}}</option>
-                        @endif
-                    @endif
-                    <option
-                        value="{{$localizacao->id}}" {{ (old("localizacao_id") == $localizacao->id ? "selected":"") }}>{{$localizacao->nome}}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-4">
-            <label for="situacao" class="form-control-label">Situação</label>
-            <select name="situacao_id" id="situacao_id" class="form-control">
-                <option value="">Selecione uma situação</option>
-                @foreach($situacoes as $situacao)
-                    @if(isset($diligencia))
-                        @if($diligencia->situacao_id == $situacao->id)
-                            <option value="{{$situacao->id}}" selected>{{$situacao->nome}}</option>
-                        @endif
-                    @endif
-                    <option
-                        value="{{$situacao->id}}" {{ (old("situacao_id") == $situacao->id ? "selected":"") }}>{{$situacao->nome}}</option>
-                @endforeach
-            </select>
-        </div>
         <div class="col-4">
             <label for="status" class="form-control-label">Status</label>
             <select name="status" id="status" class="form-control">
                 <option value="">Selecione um status</option>
+                <option value="">--------------------</option>
                 <option value="AB" {{(isset($diligencia->status) and ($diligencia->status === 'AB')) ? 'selected' : null}}>ABERTA</option>
                 <option value="EA" {{(isset($diligencia->status) and ($diligencia->status === 'EA')) ? 'selected' : null}}>EM ANDAMENTO</option>
                 <option value="AN" {{(isset($diligencia->status) and ($diligencia->status === 'AN')) ? 'selected' : null}}>AUTO DE NOTIFICAÇÃO</option>
@@ -104,6 +73,7 @@
                 <option value="CO" {{(isset($diligencia->status) and ($diligencia->status === 'CO')) ? 'selected' : null}}>CONCLUÍDA</option>
             </select>
         </div>
+    </div>
     </div>
     <div class="row form-group">
         <div class="col-12">
@@ -192,6 +162,12 @@
                     $(this).attr('selected', true);
                 });
             });
+            $('#buttonSave').focus(function () {
+                var selects = [];
+                $.each($('#lstBox2 option'), function () {
+                    $(this).attr('selected', true);
+                });
+            });
             $("input[type=text]").css("text-transform","uppercase");
             $("input[type=text]").keyup(function () {
                $(this).val($(this).val().toUpperCase());
@@ -217,7 +193,6 @@
             $('#rota_id').select2({});
             $('#rota_id').select2().trigger('change');
             $('#localizacao_id').select2({});
-            $('#situacao_id').select2({});
             $('#status').select2({});
             $('#btnRight').click(function (e) {
                 $('select').moveToListAndDelete('#lstBox1', '#lstBox2');

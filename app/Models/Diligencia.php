@@ -27,8 +27,7 @@ class Diligencia extends Model implements Transformable
 		'origem_id',
 		'cidade_id',
         'rota_id',
-        'localizacao_id',
-        'situacao_id',
+        'fiscal_id',
         'status',
         'data_hora',
         'nome',
@@ -95,9 +94,9 @@ class Diligencia extends Model implements Transformable
         return $this->belongsTo(Localizacao::class);
     }
 
-    public function situacao()
+    public function fiscal()
     {
-        return $this->belongsTo(Situacao::class);
+        return $this->belongsTo(Fiscal::class);
     }
 
     public function historico()

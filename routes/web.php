@@ -36,6 +36,12 @@ Route::get('/diligencia/pdf/{id}/download', 'DiligenciaController@pdfDownload')-
 Route::get('/diligencia/pdf/download/all', 'DiligenciaController@pdfDownloadAll')->name('pdfDownloadAll')->middleware('auth');
 Route::get('/diligencia/historico/{diligencia_id}', 'DiligenciaController@historico')->name('diligencia.historico')->middleware('auth');
 Route::post('/diligencia/historico/store/{diligencia_id}', 'DiligenciaController@historicoStore')->name('diligencia.historico.store')->middleware('auth');
+Route::get('/diligencia/historico/destroy/{diligencia_id}', 'DiligenciaController@historicoDestroy')->name('diligencia.historico.destroy')->middleware('auth');
+Route::get('/diligencia/{diligenciaId}/{fiscalId}/changeFiscal', 'DiligenciaController@changeFiscal')->name('changeFiscal')->middleware('auth');
+Route::get('/diligencia/{diligenciaId}/{status}/changeStatus', 'DiligenciaController@changeStatus')->name('changeStatus')->middleware('auth');
+Route::get('/diligencia/ods/export', 'DiligenciaController@export')->name('diligencia.export')->middleware('auth');
+Route::get('/diligencia/download/fotos', 'DiligenciaController@downloadFotos')->name('diligencia.downloadfotos')->middleware('auth');
+Route::get('/diligencia/download/list/{dir?}', 'DiligenciaController@listFiles')->name('diligencia.listfotos')->middleware('auth');
 Route::get('/getRota/{id?}', 'CidadeController@getRota')->middleware('auth');
 Route::get('/foto/upload/{diligencia_id}', 'FotoController@index')->name('foto.upload')->middleware('auth');
 Route::post('/foto/upload/{diligencia_id}', 'FotoController@upload')->name('foto.upload.send')->middleware('auth');
@@ -61,6 +67,12 @@ Route::post('/tipo_documento/buscar', 'TipoDocumentoController@buscar')->name('t
 Route::post('/tipo_historico/buscar', 'TipoHitorico@buscar')->name('tipo_historico.buscar')->middleware('auth');
 Route::post('/usuario/buscar', 'DiligenciaController@buscar')->name('usuario.buscar')->middleware('auth');
 Route::get('/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->middleware('auth', 'role:super-admin');
+Route::resource('noticia_contravencional', 'NoticiaContravencional')->middleware('auth');
+Route::get('/noticia_contravencional/{noticiaId}/{fiscalId}/changeFiscal', 'NoticiaContravencional@changeFiscal')->name('noticia.changeFiscal')->middleware('auth');
+Route::post('/noticia_contravencional/buscar', 'NoticiaContravencional@buscar')->name('noticia_contravencional.buscar')->middleware('auth');
+Route::resource('termo_representacao', 'TermoRepresentacao')->middleware('auth');
+Route::get('/termo_representacao/{termoId}/{fiscalId}/changeFiscal', 'TermoRepresentacao@changeFiscal')->name('termo.changeFiscal')->middleware('auth');
+Route::post('/termo_representacao/buscar', 'TermoRepresentacao@buscar')->name('termo_representacao.buscar')->middleware('auth');
 Route::get('/401', function (){
     return view('errors.401');
 })->name('401');
@@ -70,7 +82,5 @@ Route::get('/404', function (){
 
 Auth::routes();
 Route::get('/logout', 'UsuarioController@logout')->name('logout');
-
-//Route::get('/{hash?}', 'HashController@index')->name('hash');
 
 Route::get('/', 'HomeController@index')->name('home');

@@ -16,6 +16,8 @@ use App\Repositories\HistoricoRepository;
 use App\Repositories\HistoricoRepositoryEloquent;
 use App\Repositories\LocalizacaoRepository;
 use App\Repositories\LocalizacaoRepositoryEloquent;
+use App\Repositories\NoticiaContravencionalRepository;
+use App\Repositories\NoticiaContravencionalRepositoryEloquent;
 use App\Repositories\OcorrenciaRepository;
 use App\Repositories\OcorrenciaRepositoryEloquent;
 use App\Repositories\OrigemRepository;
@@ -32,6 +34,8 @@ use App\Repositories\RotaRepository;
 use App\Repositories\RotaRepositoryEloquent;
 use App\Repositories\SituacaoRepository;
 use App\Repositories\SituacaoRepositoryEloquent;
+use App\Repositories\TermoRepresentacaoRepository;
+use App\Repositories\TermoRepresentacaoRepositoryEloquent;
 use App\Repositories\TipoDocumentoRepository;
 use App\Repositories\TipoDocumentoRepositoryEloquent;
 use App\Repositories\TipoHistoricoRepository;
@@ -69,6 +73,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EscalaRepository::class, EscalaRepositoryEloquent::class);
         $this->app->bind(ViagemRepository::class, ViagemRepositoryEloquent::class);
         $this->app->bind(UserRepository::class, UserRepositoryEloquent::class);
+        $this->app->bind(TermoRepresentacaoRepository::class, TermoRepresentacaoRepositoryEloquent::class);
+        $this->app->bind(NoticiaContravencionalRepository::class, NoticiaContravencionalRepositoryEloquent::class);
     }
 
 }

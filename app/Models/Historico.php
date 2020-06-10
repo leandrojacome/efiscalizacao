@@ -23,12 +23,18 @@ class Historico extends Model implements Transformable
     protected $fillable = [
         'diligencia_id',
         'tipo_historico_id',
+        'fiscal_id',
         'numero',
     ];
 
     public function diligencia()
     {
         return $this->belongsTo(Diligencia::class);
+    }
+
+    public function fiscal()
+    {
+        return $this->belongsTo(Fiscal::class);
     }
 
     public function tipo_historico()

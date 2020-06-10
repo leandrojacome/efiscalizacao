@@ -18,6 +18,7 @@
 {{Html::script('vendor/select2-develop/dist/js/select2.min.js')}}
 {{Html::script('vendor/jquery.selectlistactions.js/js/jquery.selectlistactions.js')}}
 {{Html::script('vendor/bootstrap-material-datetimepicker-gh-pages/js/bootstrap-material-datetimepicker.js')}}
+{{Html::script('vendor/jquery-mask/dist/jquery.mask.min.js')}}
 
 <!-- Main JS-->
 {{Html::script('js/main.js')}}

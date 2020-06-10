@@ -107,16 +107,36 @@
                         </div>
                     </div>
                     <div class="row">
-                        &nbsp;
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="text">Localização</div>
-                            <div class="text"><strong>{{$diligencia->localizacao->nome}}</strong></div>
+                        <div class="col-12">
+                            <div class="text">Status</div>
                         </div>
-                        <div class="col-6">
-                            <div class="text">Situação</div>
-                            <div class="text"><strong>{{$diligencia->situacao->nome}}</strong></div>
+                        <div class="col-12">
+                            <div class="text">
+                                <strong>
+                                <?php
+                                    switch($diligencia->status) {
+                                        case "AB": echo "ABERTA";
+                                            break;
+                                        case "EA": echo "EM ANDAMENTO";
+                                            break;
+                                        case "AN": echo "AUTO DE NOTIFICAÇÃO";
+                                            break;
+                                        case "AI": echo "AUTO DE INFRAÇÃO";
+                                            break;
+                                        case "AC": echo "AUTO DE CONSTATAÇÃO";
+                                            break;
+                                        case "PR": echo "PROCESSO";
+                                            break;
+                                        case "AR": echo "ARQUIVO";
+                                            break;
+                                        case "CO": echo "CONCLUÍDO";
+                                            break;
+                                        default:
+                                            echo "SEM STATUS";
+                                    }
+                                ?>
+                                </strong>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -162,7 +182,7 @@
                             </div>
                             @endhasanyrole
                             <div class="modal fade" id="modal{{$foto->id}}" role="dialog">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">Foto</h5>

@@ -102,6 +102,26 @@
                                     <i class="fas fa-suitcase"></i>Diligências</a>
                             </li>
                             @endhasanyrole
+                            @hasanyrole('super-admin|gerencia|administrativo')
+                            <li class="has-sub">
+                                <a href="#">
+                                    <i class="fas fa-list-alt"></i>Lançamentos
+                                    <span class="bot-line"></span>
+                                </a>
+                                <ul class="header3-sub-list list-unstyled">
+                                    @hasanyrole('super-admin|gerencia|administrativo')
+                                    <li>
+                                        <a href="{{route('noticia_contravencional.create')}}">Notícias Contravencionais</a>
+                                    </li>
+                                    @endhasanyrole
+                                    @hasanyrole('super-admin|gerencia|administrativo')
+                                    <li>
+                                        <a href="{{route('termo_representacao.create')}}">Termos de Representação</a>
+                                    </li>
+                                    @endhasanyrole
+                                </ul>
+                            </li>
+                            @endhasanyrole
                         </ul>
                     </div>
                     <div class="header__tool">
@@ -219,4 +239,3 @@
 </body>
 
 </html>
-<!-- end document-->

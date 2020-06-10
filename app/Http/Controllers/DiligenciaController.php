@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\Diligencia\DiligenciaExport;
 use App\Http\Requests\DiligenciaFormRequest;
 use App\Repositories\CidadeRepository;
 use App\Repositories\DiligenciaRepository;
 use App\Repositories\EscalaRepository;
 use App\Repositories\FiscalRepository;
+use App\Repositories\FotoRepository;
 use App\Repositories\HistoricoRepository;
 use App\Repositories\LocalizacaoRepository;
 use App\Repositories\OcorrenciaRepository;
@@ -16,6 +18,8 @@ use App\Repositories\SituacaoRepository;
 use App\Repositories\TipoHistoricoRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use ZanySoft\Zip\Zip;
 
 class DiligenciaController extends Controller
 {
@@ -64,6 +68,10 @@ class DiligenciaController extends Controller
      * @var EscalaRepository
      */
     private $escala;
+    /**
+     * @var FotoRepository
+     */
+    private $foto;
 
     public function __construct(DiligenciaRepository $diligencia,
                                 OrigemRepository $origem,
@@ -75,7 +83,8 @@ class DiligenciaController extends Controller
                                 TipoHistoricoRepository $tipoHistorico,
                                 HistoricoRepository $historico,
                                 FiscalRepository $fiscal,
-                                EscalaRepository $escala)
+                                EscalaRepository $escala,
+                                FotoRepository $foto)
     {
         $this->middleware(['auth', 'role:super-admin|gerencia|administrativo|fiscalizacao']);
         $this->diligencia = $diligencia;
@@ -89,6 +98,7 @@ class DiligenciaController extends Controller
         $this->historico = $historico;
         $this->fiscal = $fiscal;
         $this->escala = $escala;
+        $this->foto = $foto;
     }
 
     /**
@@ -99,6 +109,7 @@ class DiligenciaController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $fiscais = $this->fiscal->all();
         if ($user->hasAnyRole('super-admin|gerencia|administrativo')) {
             $diligencias = $this->diligencia->orderBy('updated_at', 'desc')
                 ->orderBy('created_at', 'desc')->orderBy('nome', 'asc')
@@ -112,7 +123,7 @@ class DiligenciaController extends Controller
                 ->orderBy('nome', 'asc')
                 ->paginate(20);
         }
-        return view('diligencia.index', compact('diligencias'));
+        return view('diligencia.index', compact('diligencias', 'fiscais'));
     }
 
 
@@ -129,12 +140,10 @@ class DiligenciaController extends Controller
         $cidades = $this->cidade->orderBy('nome')->all();
         $rotas = $this->rota->orderBy('nome')->all();
         $ocorrencias = $this->ocorrencia->orderBy('nome')->pluck('nome', 'id');
-        $localizacoes = $this->localizacao->orderBy('nome')->all();
-        $situacoes = $this->situacao->orderBy('nome')->all();
         $lstBox1 = $ocorrencias->toArray();
         $lstBox2 = array();
         return view('diligencia.create', compact('diligenca',
-            'origens', 'cidades', 'rotas', 'ocorrencias', 'localizacoes', 'situacoes', 'lstBox1', 'lstBox2'));
+            'origens', 'cidades', 'rotas', 'ocorrencias', 'lstBox1', 'lstBox2'));
     }
 
     /**
@@ -146,6 +155,9 @@ class DiligenciaController extends Controller
     public
     function store(DiligenciaFormRequest $request)
     {
+        /**
+         * Verify if the date is empty, and modify date for american format. If not empty, create date from system.
+         */
         if (!empty($request->data_hora)) {
             $data_hora = explode(" ", $request->data_hora);
             $data = $data_hora[0];
@@ -210,14 +222,12 @@ class DiligenciaController extends Controller
         $data_hora = $data . " " . $data_hora[1];
         $ocorrencias_all = $this->ocorrencia->pluck('nome', 'id');
         $ocorrencias = $diligencia->ocorrencias()->get()->pluck('nome', 'id');
-        $localizacoes = $this->localizacao->all();
-        $situacoes = $this->situacao->all();
 
         $lstBox1 = array_diff($ocorrencias_all->toArray(), $ocorrencias->toArray());
         $lstBox2 = $ocorrencias->toArray();
 
         return view('diligencia.edit', compact('diligencia',
-            'origens', 'cidades', 'rotas', 'ocorrencias_all', 'localizacoes', 'situacoes', 'lstBox1', 'lstBox2', 'data_hora'));
+            'origens', 'cidades', 'rotas', 'ocorrencias_all', 'lstBox1', 'lstBox2', 'data_hora'));
     }
 
     /**
@@ -262,85 +272,105 @@ class DiligenciaController extends Controller
     function destroy($id)
     {
         $diligencia = $this->diligencia->find($id);
+        $fotos = $this->foto->where('diligencia_id', $id)->get();
+        foreach ($fotos as $foto)
+        {
+
+            $this->foto->destroy($foto->id);
+        }
         $diligencia->delete();
         return redirect()->route('diligencia.index')
             ->with('msg', 'Diligência removida com sucesso!')
             ->with('status', 'danger');
     }
 
+    public function clearPhotos()
+    {
+
+    }
+
     public function pdf($id)
     {
         $diligencia = $this->diligencia->find($id);
         if(is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
         else if(!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
         else if(is_null($diligencia->cidade->rota_id))
         {
             $rota = $this->rota->find($diligencia->rota_id);
             if(!is_null($diligencia->nome_denunciante))
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
             elseif (is_null($diligencia->telefone_denunciante))
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
             else
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
         }
         else
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->stream(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
     }
 
     public function pdfDownload($id)
     {
         $diligencia = $this->diligencia->find($id);
         if(is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf");
         else if(!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id))
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf");
         else if(is_null($diligencia->cidade->rota_id))
         {
             $rota = $this->rota->find($diligencia->rota_id);
             if(!is_null($diligencia->nome_denunciante))
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf");
             elseif (is_null($diligencia->telefone_denunciante))
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf");
             else
-                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
+                return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome}.pdf");
         }
         else
-            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download("{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
+            return \PDF::loadView('diligencia.pdf', compact('diligencia'))->download(date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf");
     }
 
     public function pdfDownloadAll()
     {
+        set_time_limit(0);
         $diligencias = $this->diligencia->all();
         foreach ($diligencias as $diligencia) {
             if (is_null($diligencia->telefone_denunciante) && is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id)) {
                 $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf", $output);
+                file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome}.pdf", $output);
             }
             else if (!is_null($diligencia->nome_denunciante) && !is_null($diligencia->cidade->rota_id)) {
                 $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
+                file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
             }
             else if (is_null($diligencia->cidade->rota_id)) {
                 $rota = $this->rota->find($diligencia->rota_id);
                 if (!is_null($diligencia->nome_denunciante)) {
                     $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
+                    file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->nome_denunciante}.pdf", $output);
                 }
                 elseif (is_null($diligencia->telefone_denunciante)) {
                     $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
+                    file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
                 }
                 else {
                     $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                    file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$rota->nome}.pdf", $output);
+                    file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$rota->nome}.pdf", $output);
                 }
             } else {
                 $output = \PDF::loadView('diligencia.pdf', compact('diligencia'))->output();
-                file_put_contents(base_path('pdf')."/{$diligencia->nome} - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
+                file_put_contents(base_path('pdf')."/".date('Y-m-d')." - ".str_replace('/', '-', $diligencia->nome)." - {$diligencia->cidade->nome} - R{$diligencia->cidade->rota->nome} - {$diligencia->telefone_denunciante}.pdf", $output);
             }
         }
+        $zip = Zip::create(base_path('zips').'/'.date('Y-m-d').' - diligencas.zip');
+        $zip->add(base_path('pdf'), true);
+        $zip->listFiles();
+        $zip->close();
+        $path = base_path('zips').'/'.date('Y-m-d').' - diligencas.zip';
+        $name = date('Y-m-d').' - diligencas.zip';
+        $headers = ['Content-Type: application/zip'];
+        return response()->download($path, $name, $headers)->isRedirect('/diligencia');
     }
 
     public function historico($diligencia_id)
@@ -348,7 +378,8 @@ class DiligenciaController extends Controller
         $diligencia = $this->diligencia->find($diligencia_id);
         $historicos = $this->historico->findByField('diligencia_id', $diligencia_id);
         $tiposHistorico = $this->tipoHistorico->all();
-        return view('diligencia.historico', compact('diligencia', 'historicos', 'tiposHistorico'));
+        $fiscais = $this->fiscal->all();
+        return view('diligencia.historico', compact('diligencia', 'historicos', 'tiposHistorico', 'fiscais'));
     }
 
     public function historicoStore(Request $request, $diligencia_id)
@@ -359,14 +390,86 @@ class DiligenciaController extends Controller
         ]);
         $this->historico->create(['diligencia_id' => $diligencia_id,
             'tipo_historico_id' => $request->tipo_historico_id,
+            'fiscal_id' => $request->fiscal_id,
             'numero' => $request->numero]);
+        return redirect()->back();
+    }
+
+    public function historicoDestroy($diligencia_id)
+    {
+        $this->historico->delete($diligencia_id);
         return redirect()->back();
     }
 
     public
     function buscar(Request $request)
     {
+        $fiscais = $this->fiscal->all();
         $diligencias = $this->diligencia->search($request->all());
-        return view('diligencia.index', compact('diligencias'));
+        return view('diligencia.index', compact('diligencias', 'fiscais'));
+    }
+
+    public function changeFiscal($diligenciaId, $fiscalId)
+    {
+        $this->diligencia->update(['fiscal_id' => $fiscalId], $diligenciaId);
+    }
+
+    public function changeStatus($diligenciaId, $status)
+    {
+        $this->diligencia->update(['status' => $status], $diligenciaId);
+    }
+
+    public function export()
+    {
+        return Excel::download(new DiligenciaExport(), 'diligencia.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function listFiles($dir = '')
+    {
+        if(!empty($dir)) {
+            $files = scandir(public_path("uploads/{$dir}"));
+            $i = 1;
+            $zip = Zip::create(base_path('zips') . '/' . date('Y-m-d') . " - fotos-{$dir}.zip");
+            echo "Criado zip com nome de ".date('Y-m-d')." - fotos-{$dir}.zip<br>";
+            foreach ($files as $file) {
+                if (!is_dir(public_path("uploads/{$dir}/{$file}"))) {
+                    $zip->add(public_path("uploads/{$dir}/{$file}"));
+                    echo "Adicionado arquivo nº {$i} com nome {$file}<br>";
+                }
+                $j = 1;
+                if ($i == 280) {
+                    $zip->close();
+                    echo "Novo Arquivo Zip<br>";
+                    $zip = Zip::create(base_path('zips') . '/' . date('Y-m-d') . " - fotos-{$dir}-part{$j}.zip");
+                    echo "Criado zip com nome de ".date('Y-m-d')." - fotos-{$dir}-part{$j}.zip<br>";
+                    $j++;
+                }
+                $i++;
+            }
+        } else {
+            $files = scandir(public_path("uploads"));
+            $i = 1;
+            $zip = Zip::create(base_path('zips') . '/' . date('Y-m-d') . ' - fotos.zip');
+            echo "Criado zip com nome de ".date('Y-m-d')." - fotos.zip<br>";
+            foreach ($files as $file) {
+                if (!is_dir(public_path("uploads/{$file}"))) {
+                    $zip->add(public_path("uploads/{$file}"));
+                    echo "Adicionado arquivo nº {$i} com nome {$file}<br>";
+                }
+                $j = 1;
+                if ($i == 280) {
+                    $zip->close();
+                    $zip = Zip::create(base_path('zips') . '/' . date('Y-m-d') . " - fotos.part{$j}.zip");
+                    echo "Criado zip com nome de ".date('Y-m-d')." - fotos-part{$j}.zip<br>";
+                    $j++;
+                }
+                $i++;
+            }
+        }
+    }
+
+    public function downloadFotos()
+    {
+        response()->download(base_path('zips') .'/'. 'uploads.zip');
     }
 }

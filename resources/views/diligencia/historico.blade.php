@@ -19,8 +19,10 @@
                 <table class="table table-borderless table-striped table-earning">
                     <thead>
                     <tr>
-                        <th width="60%">tipo</th>
-                        <th width="40%">numero</th>
+                        <th width="30%">tipo</th>
+                        <th width="30%">fiscal</th>
+                        <th width="30%">numero</th>
+                        <th width="10%">ação</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -28,7 +30,15 @@
                         @foreach($historicos as $historico)
                             <tr>
                                 <td>{{$historico->tipo_historico->nome}}</td>
+                                <td>
+                                    @if(!is_null($historico->fical_id))
+                                        {{$historico->fiscal->user->name}}
+                                    @else
+                                        Não há fiscal vinculado.
+                                    @endif
+                                </td>
                                 <td>{{$historico->numero}}</td>
+                                <td><a href="{{route('diligencia.historico.destroy', $historico->id)}}" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a></td>
                             </tr>
                         @endforeach
                     @else
@@ -51,8 +61,8 @@
                     <form name="form1" action="{{route('diligencia.historico.store', $diligencia->id)}}" method="post" class="form-horizontal">
                         @csrf
                         <div class="row form-group">
-                            <div class="col-6">
-                                <label for="tipo_historico_id" class="form-control-label">Origem</label>
+                            <div class="col-3">
+                                <label for="tipo_historico_id" class="form-control-label">Tipo de Histórico</label>
                                 <select name="tipo_historico_id" id="tipo_historico_id" class="form-control">
                                     <option value="">Selecione um tipo de histórico</option>
                                     @foreach($tiposHistorico as $tipoHistorico)
@@ -61,7 +71,17 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-6">
+                            <div class="col-3">
+                                <label for="fiscal_id" class="form-control-label">Fiscal</label>
+                                <select name="fiscal_id" id="fiscal_id" class="form-control">
+                                    <option value="">Selecione um fiscal</option>
+                                    @foreach($fiscais as $fiscal)
+                                        <option
+                                            value="{{$fiscal->id}}" {{ (old("fiscal_id") == $fiscal->id ? "selected":"") }}>{{$fiscal->user->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-3">
                                 <label for="numero" class="form-control-label">Número</label>
                                 <input type="text" name="numero" id="numero" class="form-control">
                             </div>
@@ -86,6 +106,7 @@
     <script>
         $('document').ready(function () {
             $('#tipo_historico_id').select2({});
+            $('#fiscal_id').select2({});
         });
     </script>
 @endsection
