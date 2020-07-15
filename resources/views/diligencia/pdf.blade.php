@@ -155,7 +155,7 @@
 <table width="100%">
     @foreach($diligencia->fotos as $foto)
         <tr>
-            <td width="100%" style="text-align: center"><img src="{{url('/uploads/grey/') . "/" . $foto->path }}"
+            <td width="100%" style="text-align: center"><img src="{{url('/uploads/90/') . "/" . $foto->path }}"
                                                              height="1010" alt=""></td>
         </tr>
     @endforeach

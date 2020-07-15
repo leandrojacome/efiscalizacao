@@ -222,4 +222,8 @@ class NoticiaContravencional extends Controller
         return view('noticia_contravencional.create', compact('cidades', 'fiscais',
             'localizacoes', 'rotas', 'noticiasContravencionais'));
     }
+    public function import(Type $var = null)
+    {
+        # code...
+    }
 }

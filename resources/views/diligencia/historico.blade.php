@@ -31,7 +31,7 @@
                             <tr>
                                 <td>{{$historico->tipo_historico->nome}}</td>
                                 <td>
-                                    @if(!is_null($historico->fical_id))
+                                    @if(!is_null($historico->fiscal_id))
                                         {{$historico->fiscal->user->name}}
                                     @else
                                         Não há fiscal vinculado.

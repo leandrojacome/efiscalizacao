@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('cidade', 'CidadeController')->middleware('auth','role:super-admin|gerencia|administrativo');
+Route::resource('teste', 'Teste')->middleware('auth','role:super-admin|gerencia|administrativo');
 Route::resource('rota', 'RotaController')->middleware('auth','role:super-admin|gerencia|administrativo');
 Route::resource('origem', 'OrigemController')->middleware('auth','role:super-admin|gerencia|administrativo');
 Route::resource('ocorrencia', 'OcorrenciaController')->middleware('auth','role:super-admin|gerencia|administrativo');
